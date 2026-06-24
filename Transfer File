@@ -1,1 +1,68 @@
+// Source file is "June 2026" -> copy file to "Consolidated Entries" and "Reporting Hub"
+function transferFile() {
+
+const ss = SpreadsheetApp.getActiveSpreadsheet();
+const coverSheet = ss.getSheetByName("Cover");
+  
+const sourceSheet = ss.getSheetByName("June 2026");
+ 
+const targetSheet = ss.getSheetByName("Consolidated Entries");
+const reportingSheet = ss.getSheetByName("Reporting Hub");
+  
+  // Get ending row from Cover
+  const endRow = Number(coverSheet.getRange("B2").getValue());
+
+  // Get source data for Consolidated Entries
+  const dataConsolidated = sourceSheet.getRange(`A3:Y${endRow}`).getValues();
+
+  // Get source data for Reporting Hub
+  const dataReporting = sourceSheet.getRange(`A3:Y${endRow}`).getValues();
+
+  // Convert Column B to text with leading apostrophe for Reporting Hub only
+  dataReporting.forEach(row => {
+    if (row[1] instanceof Date) {
+      row[1] =
+        "'" +
+        Utilities.formatDate(
+          row[1],
+          Session.getScriptTimeZone(),
+          "M/d/yyyy"
+        );
+    } else if (row[1] !== "") {
+      row[1] = "'" + row[1];
+    }
+  });
+
+  // Check if there is data to transfer
+  const hasData = dataConsolidated.some(row =>
+    row.some(cell => cell !== "")
+  );
+
+  if (!hasData) {
+    throw new Error("No data found to transfer.");
+  }
+
+  // Destination row for Consolidated Entries
+  const startRow = Number(coverSheet.getRange("A4").getValue());
+
+  targetSheet
+    .getRange(startRow, 1, dataConsolidated.length, 25)
+    .setValues(dataConsolidated);
+
+  // Destination row for Reporting Hub
+  const startRow1 = Number(coverSheet.getRange("D4").getValue());
+
+  reportingSheet
+    .getRange(startRow1, 1, dataReporting.length, 25)
+    .setValues(dataReporting);
+
+  // Clear source data after successful transfer
+  sourceSheet.getRange(`A3:Y${endRow}`).clearContent();
+
+  SpreadsheetApp.getUi().alert(
+    `${dataConsolidated.length} row(s) successfully transferred to Consolidated Entries and Reporting Hub.`
+  );
+
+}
+
 
