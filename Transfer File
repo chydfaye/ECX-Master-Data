@@ -1,14 +1,27 @@
-// Source file is "June 2026" -> copy file to "Consolidated Entries" and "Reporting Hub"
 function transferFile() {
 
-const ss = SpreadsheetApp.getActiveSpreadsheet();
-const coverSheet = ss.getSheetByName("Cover");
-  
-const sourceSheet = ss.getSheetByName("June 2026");
- 
-const targetSheet = ss.getSheetByName("Consolidated Entries");
-const reportingSheet = ss.getSheetByName("Reporting Hub");
-  
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  const sourceSheet = ss.getSheetByName("June 2026");
+  const targetSheet = ss.getSheetByName("Consolidated Entries");
+  const reportingSheet = ss.getSheetByName("Reporting Hub");
+  const coverSheet = ss.getSheetByName("Cover");
+
+
+  // Clear formatting in Reporting Hub (A2:Z)
+  reportingSheet.getRange("A2:Z").clearFormat();
+
+
+  // Clear filters (if applied)
+  if (targetSheet.getFilter()) {
+    targetSheet.getFilter().remove();
+  }
+
+  if (reportingSheet.getFilter()) {
+    reportingSheet.getFilter().remove();
+  }
+
+
   // Get ending row from Cover
   const endRow = Number(coverSheet.getRange("B2").getValue());
 
@@ -56,9 +69,7 @@ const reportingSheet = ss.getSheetByName("Reporting Hub");
     .getRange(startRow1, 1, dataReporting.length, 25)
     .setValues(dataReporting);
 
-  // Clear source data after successful transfer
-  sourceSheet.getRange(`A3:Y${endRow}`).clearContent();
-
+ 
   SpreadsheetApp.getUi().alert(
     `${dataConsolidated.length} row(s) successfully transferred to Consolidated Entries and Reporting Hub.`
   );
