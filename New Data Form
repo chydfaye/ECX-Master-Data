@@ -1,1 +1,84 @@
+function NewForm() {
 
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const coverSheet = ss.getSheetByName("Cover");
+  const namesSheet = ss.getSheetByName("Names");
+  const juneSheet = ss.getSheetByName("June 2026");
+  const sourceSheet = ss.getSheetByName("June 2026");
+
+  // Get names from Names!A2 down
+  const lastRow = namesSheet.getLastRow();
+  const names = namesSheet.getRange(2, 1, lastRow - 1, 1).getValues();
+
+  // Get date from Cover!C2 and add apostrophe
+  const selectedDate = coverSheet.getRange("C2").getDisplayValue();
+  const dates = Array.from({ length: names.length }, () => ["'" + selectedDate]);
+
+  // Starting number from Cover!A2
+  const startNumber = Number(coverSheet.getRange("A2").getValue());
+
+  const sequence = [];
+
+  for (let i = 0; i < names.length; i++) {
+    sequence.push([startNumber + i]);
+  }
+
+  // Populate June 2026
+  juneSheet.getRange(3, 1, sequence.length, 1).setValues(sequence); // A
+  juneSheet.getRange(3, 2, dates.length, 1).setValues(dates);       // B
+  juneSheet.getRange(3, 3, names.length, 1).setValues(names);       // C
+
+  // Open Master Call Log
+  const targetSS = SpreadsheetApp.openById(
+    "1VVawe3DyNIU5LCB1PPOr7xllf3k6OWwZpmQFqLc0mGs"
+  );
+
+  // Delete existing Test 2026 if it exists
+  const existingTestSheet = targetSS.getSheetByName("Test 2026");
+
+  if (existingTestSheet) {
+    targetSS.deleteSheet(existingTestSheet);
+  }
+
+  // Duplicate June 2026 and rename to Test 2026
+  const sourceJuneSheet = targetSS.getSheetByName("June 2026");
+
+  const targetSheet = sourceJuneSheet.copyTo(targetSS);
+  targetSheet.setName("Test 2026");
+
+  // Optional: move Test 2026 beside June 2026
+  targetSS.setActiveSheet(targetSheet);
+  targetSS.moveActiveSheet(sourceJuneSheet.getIndex() + 1);
+
+  // Clear data area
+  targetSheet.getRange("A3:Y500").clearContent();
+
+  // Copy A:C from local June 2026
+  const data = juneSheet.getRange(
+    3,
+    1,
+    names.length,
+    3
+  ).getValues();
+
+  // Paste into Test 2026
+  targetSheet.getRange(
+    3,
+    1,
+    data.length,
+    3
+  ).setValues(data);
+
+  // Clear source data after successful transfer
+  sourceSheet.getRange("A3:X458").clearContent();
+
+  // Restore IMPORTRANGE formula
+  juneSheet.getRange("A3").setFormula(
+    '=IMPORTRANGE("1VVawe3DyNIU5LCB1PPOr7xllf3k6OWwZpmQFqLc0mGs","June 2026!A3:Y500")'
+  );
+
+  SpreadsheetApp.getUi().alert(
+    `${names.length} name(s) successfully transferred to Test 2026.`
+  );
+
+}
