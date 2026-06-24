@@ -1,0 +1,64 @@
+function copyToGOBJune() {
+
+  // ✅ GOB June (TARGET)
+  const gobSS = SpreadsheetApp.openById(
+    "1YKgrViQecT91k-s9aQXaNZb9IWo-Z8h0IEZ38bR4DMU"
+  );
+
+  // ✅ Master Call Log (SOURCE)
+  const sourceSS = SpreadsheetApp.openById(
+    "1VVawe3DyNIU5LCB1PPOr7xllf3k6OWwZpmQFqLc0mGs"
+  );
+
+  const sourceSheet = sourceSS.getSheetByName("June 2026");
+
+  // ✅ Cover File (controls sheet name)
+  const coverSS = SpreadsheetApp.openById(
+    "1seCi0GF7ydM7dgITXkFZwg_mGmjbcIgWMWmPQkC8NT4"
+  );
+
+  const coverSheet = coverSS.getSheetByName("Cover");
+
+  if (!coverSheet) {
+    throw new Error('Cover sheet not found.');
+  }
+
+  // ✅ Get sheet name from C4
+  let newSheetName = coverSheet.getRange("C4").getValue();
+
+  if (!newSheetName) {
+    throw new Error('Cover!C4 is empty.');
+  }
+
+  // ✅ Convert to string (avoids errors if number/date)
+  newSheetName = newSheetName.toString().trim();
+
+  // ✅ Prevent invalid sheet name characters
+  newSheetName = newSheetName.replace(/[\\\/\?\*\[\]]/g, "");
+
+  // ✅ Check if sheet already exists
+  const existingSheet = gobSS.getSheetByName(newSheetName);
+  if (existingSheet) {
+    throw new Error(`Sheet "${newSheetName}" already exists.`);
+  }
+
+  // ✅ Create new tab
+  const targetSheet = gobSS.insertSheet(newSheetName);
+
+  // ✅ Get data from source
+  const lastRow = sourceSheet.getLastRow();
+  const data = sourceSheet.getRange(`A3:Y${lastRow}`).getValues();
+
+  if (data.length === 0) {
+    throw new Error("No data found to copy.");
+  }
+
+  // ✅ Paste into new sheet
+  targetSheet
+    .getRange(1, 1, data.length, data[0].length)
+    .setValues(data);
+
+  SpreadsheetApp.getUi().alert(
+    `✅ Data copied to GOB June → ${newSheetName}`
+  );
+}
