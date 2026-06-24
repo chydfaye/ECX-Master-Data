@@ -1,8 +1,8 @@
-function copyToGOBJune() {
+function copyToUPWJune() {
 
-  // ✅ GOB June (TARGET)
+  // ✅ UPW June (TARGET)
   const gobSS = SpreadsheetApp.openById(
-    "1YKgrViQecT91k-s9aQXaNZb9IWo-Z8h0IEZ38bR4DMU"
+    "18IV5zNRu1xMICdiXt2CEghLf_F6mAvtVdLvRBstGE2A"
   );
 
   // ✅ Master Call Log (SOURCE)
@@ -47,7 +47,7 @@ function copyToGOBJune() {
 
   // ✅ Get data from source
   const lastRow = sourceSheet.getLastRow();
-  const data = sourceSheet.getRange(`A3:Y${lastRow}`).getValues();
+  const data = sourceSheet.getRange(`A1:Z${lastRow}`).getValues();
 
   if (data.length === 0) {
     throw new Error("No data found to copy.");
@@ -59,6 +59,6 @@ function copyToGOBJune() {
     .setValues(data);
 
   SpreadsheetApp.getUi().alert(
-    `✅ Data copied to GOB June → ${newSheetName}`
+    `✅ Data copied to UPW June → ${newSheetName}`
   );
 }
