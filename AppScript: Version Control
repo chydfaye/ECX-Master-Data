@@ -1,20 +1,20 @@
-function copyToUPWJune() {
+function copyToGOBJune() {
 
-  // ✅ UPW June (TARGET)
+  // ✅ GOB June (TARGET)
   const gobSS = SpreadsheetApp.openById(
-    "18IV5zNRu1xMICdiXt2CEghLf_F6mAvtVdLvRBstGE2A"
+    "1dswFay7N4WwYrzhvWhkt2GsxKCmRQN46s9hpx1TiWQw"//change every month
   );
 
   // ✅ Master Call Log (SOURCE)
   const sourceSS = SpreadsheetApp.openById(
-    "1VVawe3DyNIU5LCB1PPOr7xllf3k6OWwZpmQFqLc0mGs"
+    "1OCfHIpHX7ARgATlY5MQQXcj18DzritahAk3mILU_0hs"
   );
 
-  const sourceSheet = sourceSS.getSheetByName("June 2026");
+  const sourceSheet = sourceSS.getSheetByName("July 2026"); // change every month
 
   // ✅ Cover File (controls sheet name)
   const coverSS = SpreadsheetApp.openById(
-    "1seCi0GF7ydM7dgITXkFZwg_mGmjbcIgWMWmPQkC8NT4"
+    "1CrVRpSUoKglgC87qChfN5f9tuO0jBD-wl9qW3HSx1EE"
   );
 
   const coverSheet = coverSS.getSheetByName("Cover");
@@ -59,6 +59,8 @@ function copyToUPWJune() {
     .setValues(data);
 
   SpreadsheetApp.getUi().alert(
-    `✅ Data copied to UPW June → ${newSheetName}`
+    `✅ Data copied to GOB July → ${newSheetName}` //change every month
   );
+coverSheet.getRange("D11").setValue("OK");
+
 }
