@@ -1,0 +1,30 @@
+function removeADSCDS() {
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Reporting Hub");
+
+  const lastRow = sheet.getLastRow();
+
+  sheet.getRange(2, 18, lastRow - 1, 2).clearDataValidations();
+
+  // Get columns R:S
+  const data = sheet.getRange(2, 18, lastRow - 1, 2).getValues();
+
+  // Remove " (ADS)" and " (CDS)"
+  const updated = data.map(row =>
+    row.map(cell => {
+      if (typeof cell === "string") {
+        return cell
+          .replace(/ \(ADS\)/g, "")
+          .replace(/ \(CDS\)/g, "");
+      }
+      return cell;
+    })
+  );
+
+  // Write back
+  sheet.getRange(2, 18, updated.length, 2).setValues(updated);
+
+ss.getRange("D13").setValue("OK");
+
+}
