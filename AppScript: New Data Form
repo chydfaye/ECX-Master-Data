@@ -3,8 +3,8 @@ function NewForm() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const coverSheet = ss.getSheetByName("Cover");
   const namesSheet = ss.getSheetByName("Names");
-  const juneSheet = ss.getSheetByName("June 2026");
-  const sourceSheet = ss.getSheetByName("June 2026");
+  const juneSheet = ss.getSheetByName("July 2026"); // change every month
+  const sourceSheet = ss.getSheetByName("July 2026"); // change every month
 
   // Get names from Names!A2 down
   const lastRow = namesSheet.getLastRow();
@@ -30,7 +30,7 @@ function NewForm() {
 
   // Open Master Call Log
   const targetSS = SpreadsheetApp.openById(
-    "1VVawe3DyNIU5LCB1PPOr7xllf3k6OWwZpmQFqLc0mGs"
+    "1OCfHIpHX7ARgATlY5MQQXcj18DzritahAk3mILU_0hs"
   );
 
   // Delete existing Test 2026 if it exists
@@ -41,7 +41,7 @@ function NewForm() {
   }
 
   // Duplicate June 2026 and rename to Test 2026
-  const sourceJuneSheet = targetSS.getSheetByName("June 2026");
+  const sourceJuneSheet = targetSS.getSheetByName("July 2026"); // change every month
 
   const targetSheet = sourceJuneSheet.copyTo(targetSS);
   targetSheet.setName("Test 2026");
@@ -74,11 +74,12 @@ function NewForm() {
 
   // Restore IMPORTRANGE formula
   juneSheet.getRange("A3").setFormula(
-    '=IMPORTRANGE("1VVawe3DyNIU5LCB1PPOr7xllf3k6OWwZpmQFqLc0mGs","June 2026!A3:Y500")'
+    '=IMPORTRANGE("https://docs.google.com/spreadsheets/d/1OCfHIpHX7ARgATlY5MQQXcj18DzritahAk3mILU_0hs/edit","July 2026!A3:V")' //change every month
   );
 
   SpreadsheetApp.getUi().alert(
     `${names.length} name(s) successfully transferred to Test 2026.`
   );
+coverSheet.getRange("D10").setValue("OK");
 
 }
