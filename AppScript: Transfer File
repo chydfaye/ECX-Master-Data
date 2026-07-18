@@ -2,7 +2,7 @@ function transferFile() {
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  const sourceSheet = ss.getSheetByName("June 2026");
+  const sourceSheet = ss.getSheetByName("July 2026"); // change every month
   const targetSheet = ss.getSheetByName("Consolidated Entries");
   const reportingSheet = ss.getSheetByName("Reporting Hub");
   const coverSheet = ss.getSheetByName("Cover");
@@ -73,7 +73,5 @@ function transferFile() {
   SpreadsheetApp.getUi().alert(
     `${dataConsolidated.length} row(s) successfully transferred to Consolidated Entries and Reporting Hub.`
   );
-
+coverSheet.getRange("D9").setValue("OK");
 }
-
-
